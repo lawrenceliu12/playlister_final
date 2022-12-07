@@ -12,6 +12,8 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 
 import Button from '@mui/material/Button'; 
+import Menu from '@mui/material/Menu';
+import MenuItem from '@mui/material/MenuItem';
 
 const Navbar = () => {
   // const { auth } = useState(AuthContext);
@@ -20,6 +22,106 @@ const Navbar = () => {
   const [ route, setRoute ] = useState(0);
   let location = useLocation();
   const history = useHistory();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const isMenuOpen = Boolean(anchorEl);
+
+  function handleSortMenuOpen(event){
+    setAnchorEl(event.currentTarget);
+  }
+
+  function handleSortMenuClose(){
+    setAnchorEl(null);
+  }
+
+  function handleCreationDate(){
+    handleSortMenuClose();
+    let list = store.userPlaylist;
+    list.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : -1)
+    store.rerenderList(list);
+  }
+
+  function handleEditDate(){
+    handleSortMenuClose();
+    let list = store.userPlaylist;
+    list.sort((a, b) => (a.updatedAt < b.updatedAt) ? 1 : -1)
+    store.rerenderList(list);
+  }
+
+  function handleAlphabeticalOrder(){
+    handleSortMenuClose();
+    // let list = store.userPlaylist;
+    let list;
+    if (route === 0){
+      list = store.userPlaylist;
+      list.sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      });
+      store.rerenderList(list);
+    }
+    else if (route === 1 || route === 2){
+      list = store.publishedPlaylists
+      list.sort(function (a, b) {
+        return a.name.localeCompare(b.name);
+      });
+      store.rerenderPublishedList(list);
+    }
+  }
+
+  function handlePublishDate(){
+    handleSortMenuClose();
+    let list = store.publishedPlaylists;
+    list.sort(function (a, b) {
+      return a.publishDate.localeCompare(b.publishDate);
+    });
+    store.rerenderPublishedList(list);
+  }
+
+  function handleListenOrder(){
+    handleSortMenuClose();
+    let list = store.publishedPlaylists;
+    console.log(list);
+    list.sort((a, b) => (a.listens < b.listens) ? 1 : -1)
+    store.rerenderPublishedList(list);
+  }
+
+  function handleLikeOrder(){
+    handleSortMenuClose();
+    let list = store.publishedPlaylists;
+    console.log(list);
+    list.sort((a, b) => (a.likes < b.likes) ? 1 : -1)
+    store.rerenderPublishedList(list);
+  }
+
+  function handleDislikeOrder(){
+    handleSortMenuClose();
+    let list = store.publishedPlaylists;
+    console.log(list);
+    list.sort((a, b) => (a.dislikes < b.dislikes) ? 1 : -1)
+    store.rerenderPublishedList(list);
+  }
+
+
+  const sortMenuOwned =
+    <Menu
+      anchorEl={anchorEl}
+      open={isMenuOpen}
+      onClose={handleSortMenuClose}>
+        <MenuItem onClick={handleCreationDate}>Creation Date (Old - New)</MenuItem>
+        <MenuItem onClick={handleEditDate}>Last Edit Date (New - Old)</MenuItem>
+        <MenuItem onClick={handleAlphabeticalOrder}>Name (A - Z)</MenuItem>
+    </Menu>
+
+  const sortMenu = 
+    <Menu
+        anchorEl={anchorEl}
+        open={isMenuOpen}
+        onClose={handleSortMenuClose}>
+          <MenuItem onClick={handleAlphabeticalOrder}>Name (A-Z)</MenuItem>
+          <MenuItem onClick={handlePublishDate}>Publish Date (Newest)</MenuItem>
+          <MenuItem onClick={handleListenOrder}>Listens (High - Low)</MenuItem>
+          <MenuItem onClick={handleLikeOrder}>Likes (High - Low)</MenuItem>
+          <MenuItem onClick={handleDislikeOrder}>Dislikes (High - Low)</MenuItem>
+    </Menu>
 
   const [text, setText] = useState(""); 
   
@@ -119,11 +221,12 @@ const Navbar = () => {
             <TextField variant="outlined" size="small" style = {{width: '100%'}} label='Search' onKeyPress={handleKeyPress} onChange={handleText} />
         </div>
         <div>
-            <Button style={{backgroundColor: 'transparent', height: '100%', borderRadius: '0', float: 'right'}} onClick = {handleSort}>
+            <Button style={{backgroundColor: 'transparent', height: '100%', borderRadius: '0', float: 'right'}} onClick = {handleSortMenuOpen}>
                 <SortIcon/>
             </Button>
             <Typography variant="h6" style = {{float: 'right'}}>Sort By</Typography>
         </div>
+        {route > 0 ? sortMenu : sortMenuOwned } 
     </div>
   )
 }

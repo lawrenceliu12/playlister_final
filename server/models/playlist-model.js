@@ -24,6 +24,7 @@ const playlistSchema = new Schema(
             username: String,
             comment: String,
         }]},
+        listens: {type: Number, default: 0, required: true}
     },
     { timestamps: true },
 )

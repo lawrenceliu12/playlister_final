@@ -854,6 +854,20 @@ function GlobalStoreContextProvider(props) {
         filterUserPlaylist(text);
     }
 
+    store.rerenderList = function(list){
+        storeReducer({
+            type: GlobalStoreActionType.GET_PLAYLIST_FROM_USER,
+            payload: list
+        })
+    }
+
+    store.rerenderPublishedList = function(list){
+        storeReducer({
+            type: GlobalStoreActionType.GET_PUBLISHED_PLAYLISTS,
+            payload: list
+        })
+    }
+
     store.undo = function () {
         tps.undoTransaction();
     }
