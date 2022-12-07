@@ -1,3 +1,4 @@
+import React from 'react'
 import { useContext, useState } from 'react'
 import AuthContext from '../auth';
 import { GlobalStoreContext } from '../store'
@@ -18,28 +19,27 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 import Button from '@mui/material/Button';
 
-/*
-    This is a card in our list of top 5 lists. It lets select
-    a list for editing and it has controls for changing its 
-    name or deleting it.
-    
-    @author McKilla Gorilla
-*/
-function ListCard(props) {
+
+const FilterAllCards = (props) => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
     const [text, setText] = useState("");
-    const { idNamePair, selected, publish, publishDate, likes, dislikes } = props;
+    const { idNamePair, username, likes, dislikes, name, publish, publishDate, songs, comments } = props;
     const [ open, setOpen ] = useState(false);
     let cardElement = "";
+
+    function handleDuplicate(event){
+        store.duplicateList(idNamePair);
+    }
 
     function handleLoadList(event, id) {
         console.log("handleLoadList for " + id);
         if (!event.target.disabled) {
             let _id = event.target.id;
-            if (_id.indexOf('list-card-text-') >= 0)
+            if (_id.indexOf('list-card-text-') >= 0){
                 _id = ("" + _id).substring("list-card-text-".length);
+            }
 
             console.log("load " + event.target.id);
 
@@ -50,7 +50,7 @@ function ListCard(props) {
     }
 
     function handleLoadList2(event, id){
-        console.log("Does it get here");
+        console.log("Does it get here1");
         if (!event.target.disabled){
             let _id = event.target.id;
             if (_id.indexOf('list-card-text-') >= 0){
@@ -58,38 +58,6 @@ function ListCard(props) {
             }
             store.setSelectedList(id);
         }
-    }
-
-    function handleToggleEdit(event) {
-        event.stopPropagation();
-        toggleEdit();
-    }
-
-    function toggleEdit() {
-        let newActive = !editActive;
-        if (newActive) {
-            store.setIsListNameEditActive();
-        }
-        setEditActive(newActive);
-    }
-
-    async function handleDeleteList(event, id) {
-        event.stopPropagation();
-        let _id = event.target.id;
-        _id = ("" + _id).substring("delete-list-".length);
-        store.markListForDeletion(id);
-    }
-
-    function handleKeyPress(event) {
-        if (event.code === "Enter") {
-            let id = event.target.id.substring("list-".length);
-            store.changeListName(id, text);
-            toggleEdit();
-        }
-    }
-    function handleUpdateText(event) {
-        console.log("here")
-        setText(event.target.value);
     }
 
     function handleCloseList(event){
@@ -104,45 +72,13 @@ function ListCard(props) {
         handleLoadList(event, id);
     }
 
-    function openSelectedList(event, id){
-        cardElement =
-        <>
-            
-        </>
+    async function handleDeleteList(event, id) {
+        event.stopPropagation();
+        let _id = event.target.id;
+        _id = ("" + _id).substring("delete-list-".length);
+        store.markListForDeletion(id);
     }
-
-    function handleUndo(event){
-        store.undo();
-    }
-
-    function handleRedo(event){
-        store.redo();
-    }
-
-    function handlePublish(event){
-        store.publish(idNamePair._id);
-    }
-
-    function handleDuplicate(event){
-        store.duplicateList(idNamePair);
-    }
-
-    let selectClass = "unselected-list-card";
-    if (selected) {
-        selectClass = "selected-list-card";
-    }
-    let cardStatus = false;
-    if (store.isListNameEditActive) {
-        cardStatus = true;
-    }
-    let modalJSX = "";
-    if (store.isEditSongModalOpen()) {
-        modalJSX = <MUIEditSongModal />;
-    }
-    else if (store.isRemoveSongModalOpen()) {
-        modalJSX = <MUIRemoveSongModal />;
-    }
-
+    
     if (store.currentList && store.currentList._id === idNamePair._id && open){
         cardElement =
             <>
@@ -155,13 +91,13 @@ function ListCard(props) {
                 button
                 onClick={(event) => {
                     handleLoadList2(event, idNamePair._id);
-                    openSelectedList(event, idNamePair._id);
+                    // openSelectedList(event, idNamePair._id);
                 }}
                 >
                 <Box sx={{ p: 1, flexGrow: 1 }}>
                     {idNamePair.name}
                     <Box sx = {{p: 0,fontSize: '10pt'}}>
-                        By: {auth.user.firstName} {auth.user.lastName}
+                        By: {username}
                     </Box>
                     {
                         publishDate &&   
@@ -171,12 +107,9 @@ function ListCard(props) {
                     }
                 </Box>
                 <Box sx={{ p: 1 }}>
-                    <IconButton onClick={handleToggleEdit} disabled = {publish} aria-label='edit'>
-                        <EditIcon style={{fontSize:'34pt'}} />
-                    </IconButton>
                     <IconButton onClick={(event) => {
                             handleCloseList(event);
-                        }}>
+                    }}>
                         <ExpandLessIcon style={{fontSize:'34pt'}} />
                     </IconButton>
                 </Box>
@@ -199,16 +132,7 @@ function ListCard(props) {
                             />
                         ))
                     }
-                    <AddSongBottomCard publish = {publish}/>
                 </List>
-                { modalJSX }
-                <Box sx = {{position: 'flex', justifyContent: 'space-between'}}>
-                    <Button sx = {{float: 'left'}} onClick = {handleUndo} disabled = {!store.canUndo() || publish} variant="contained">
-                        Undo
-                    </Button>
-                    <Button sx = {{float: 'left'}} onClick = {handleRedo} disabled = {!store.canRedo() || publish} variant="contained">
-                        Redo
-                    </Button>
                     <Button sx = {{float: 'right'}} onClick = {handleDuplicate} variant="contained">
                         Duplicate
                     </Button>
@@ -217,10 +141,6 @@ function ListCard(props) {
                             }} aria-label='delete' variant="contained">
                         Delete
                     </Button>
-                    <Button sx = {{float: 'right'}} disabled = {publish} onClick = {handlePublish} variant="contained">
-                        Publish
-                    </Button>
-                </Box>
             </Box>
             </>
     }
@@ -238,7 +158,7 @@ function ListCard(props) {
                 <Box sx={{ p: 1, flexGrow: 1 }}>
                     {idNamePair.name}
                     <Box sx = {{p: 1, fontSize: '12pt'}}>
-                        By: {auth.user.firstName} {auth.user.lastName}
+                        By: {username}
                     </Box>
                     {
                         publishDate &&   
@@ -248,9 +168,6 @@ function ListCard(props) {
                     }
                 </Box>
                 <Box sx={{ p: 1 }}>
-                    <IconButton onClick={handleToggleEdit} disabled = {publish} aria-label='edit'>
-                        <EditIcon style={{fontSize:'34pt'}} />
-                    </IconButton>
                     <IconButton onClick={(event) => {
                         handleOpen(event, idNamePair._id)}}>
                         <ExpandMoreIcon style={{fontSize:'34pt'}} />
@@ -272,9 +189,6 @@ function ListCard(props) {
                     </Box>
                 </Box>
                 <Box sx={{ p: 1 }}>
-                    <IconButton onClick={handleToggleEdit} disabled = {publish} aria-label='edit'>
-                        <EditIcon style={{fontSize:'34pt'}} />
-                    </IconButton>
                     <IconButton onClick={(event) => {
                         handleOpen(event, idNamePair._id)}}>
                         <ExpandMoreIcon style={{fontSize:'34pt'}} />
@@ -285,29 +199,9 @@ function ListCard(props) {
         </>
     }
 
-    
-    if (editActive) {
-        cardElement =
-            <TextField
-                margin="normal"
-                required
-                fullWidth
-                id={"list-" + idNamePair._id}
-                label="Playlist Name"
-                name="name"
-                autoComplete="Playlist Name"
-                className='list-card'
-                onKeyPress={handleKeyPress}
-                onChange={handleUpdateText}
-                defaultValue={idNamePair.name}
-                inputProps={{style: {fontSize: 48}}}
-                InputLabelProps={{style: {fontSize: 24}}}
-                autoFocus
-            />
-    }
     return (
         cardElement
     );
 }
 
-export default ListCard;
+export default FilterAllCards

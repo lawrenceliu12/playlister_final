@@ -74,19 +74,15 @@ export default function YoutubePlayer(){
   // THE PLAYER AND PLAYS IT
   function loadAndPlayCurrentSong(player) {
     let song = "";
-    console.log(songCount);
     if (songCount < length){
       song = playlist[songCount];
     }
     else{
       setSongCount(0);
     }
-    console.log(song);
 
-    if (player){
       player.loadVideoById(song);
       player.playVideo();
-    }
   }
 
   // THIS FUNCTION INCREMENTS THE PLAYLIST SONG TO THE NEXT ONE

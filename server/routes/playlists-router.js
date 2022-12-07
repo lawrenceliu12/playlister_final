@@ -17,5 +17,7 @@ router.post('/playlists', auth.verify, PlaylistController.getPlaylists)
 router.put('/playlist/:id', auth.verify, PlaylistController.updatePlaylist)
 router.post('/duplicate', auth.verify, PlaylistController.duplicatePlaylist)
 router.put('/comment/:id', auth.verify, PlaylistController.addComment)
+router.get('/published', auth.verify, PlaylistController.getPublishedPlaylists)
+router.get('/filter/:name', auth.verify, PlaylistController.filterOwnPlaylists)
 
 module.exports = router

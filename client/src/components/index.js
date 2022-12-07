@@ -10,6 +10,7 @@ import ListCard from "./ListCard";
 import WorkspaceScreen from "./WorkspaceScreen";
 import Statusbar from "./Statusbar";
 import AppBanner from "./AppBanner";
+import FilterAll from "./FilterAll";
 
 export{
     HomeWrapper,
@@ -24,4 +25,5 @@ export{
     WorkspaceScreen,
     Statusbar,
     AppBanner,
+    FilterAll,
 }

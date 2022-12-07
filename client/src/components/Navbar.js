@@ -2,6 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import AuthContext from '../auth'
 import { GlobalStoreContext } from '../store'
 import { Link } from 'react-router-dom' 
+import { useHistory, useLocation } from 'react-router-dom';
 
 import HomeIcon from '@mui/icons-material/Home';
 import GroupsIcon from '@mui/icons-material/Groups';
@@ -14,19 +15,30 @@ import Button from '@mui/material/Button';
 
 const Navbar = () => {
   // const { auth } = useState(AuthContext);
-  const { store } = useState(GlobalStoreContext);
+  const { store } = useContext(GlobalStoreContext);
+  const [ route, setRoute ] = useState(0);
+  let location = useLocation();
+  const history = useHistory();
+
   const [text, setText] = useState("");  
   function handleHome(event){
-    // event.stopPropagation();
-    // store.closeCurrentList();
+    if (location.pathname === "/"){
+      history.go(0);
+    }
+    else{
+      history.push("/");
+    }
+    setRoute(0);
   }
 
   function handleGroup(event){
-    console.log("Group");
+    history.push("/published");
+    setRoute(1);
   }
 
   function handlePerson(event){
-    console.log("Person")
+    console.log("Person");
+    setRoute(2);
   }
   function handleSort(event){
     console.log("Sort")
@@ -34,7 +46,18 @@ const Navbar = () => {
 
   function handleKeyPress(event){
     if (event.code === "Enter") {
-        console.log(text);
+      if (route === 0){
+        if (text === ""){
+          store.renderNoPlaylists();
+          return;
+        }
+        else{
+          store.filterOwnPlaylists(text);
+        }
+      }
+      if (route === 1){
+        console.log("yuh");
+      }
     }
   }
 
@@ -55,7 +78,7 @@ const Navbar = () => {
                     <HomeIcon/>
                 </Link> */}
             </Button>
-            <Button style={{backgroundColor: 'transparent', height: '100%', borderRadius: '0'}} onClick = {handleGroup}>
+            <Button style={{backgroundColor: 'transparent', height: '100%', borderRadius: '0'}} onClick = {handleGroup} component = {Link} to ="/all/">
                 <GroupsIcon />
             </Button>
             <Button style={{backgroundColor: 'transparent', height: '100%', borderRadius: '0'}} onClick = {handlePerson}>

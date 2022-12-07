@@ -12,7 +12,7 @@ import Button from '@mui/material/Button'
 import YoutubePlayer from './YouTubePlayer.js'
 import Comment from './Comment.js';
 
-import Navbar from './Navbar';
+// import Navbar from './Navbar';
 /*
     This React component lists all the top5 lists in the UI.
     
@@ -61,7 +61,6 @@ const HomeScreen = () => {
             </Fab>
             <Typography variant="h3">Your Lists</Typography>
         </div>
-        <Navbar />
         <div id="playlist-selector">
             <div id="list-selector-heading">
             </div>

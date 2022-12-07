@@ -251,6 +251,7 @@ duplicatePlaylist = async(req, res) => {
     let userId = req.userId;
     User.findOne({_id: userId}, (err, user) => {
         let userEmail = user.email;
+        let username = user.username;
 
         if (err){
             return res.status(401).json({
@@ -262,6 +263,7 @@ duplicatePlaylist = async(req, res) => {
         const dupPlaylist = new Playlist({
             name: body.data.name, 
             songs: body.data.songs,
+            username: username,
             ownerEmail: userEmail,
         });
 
@@ -330,6 +332,52 @@ addComment = async(req, res) => {
     });
 }
 
+getPublishedPlaylists = async(req, res) => {
+    Playlist.find({publish: true}, (err, playlist) => {
+        if (err) {
+            return res.status(404).json({
+                success: false,
+                errorMessage: 'Published playlists could not be found!'
+            })
+        }
+    })
+
+    await Playlist.find({publish: true}, (err, playlists) => {
+        if (err) {
+            return res.status(400).json({ success: false, error: err })
+        }
+        if (!playlists.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Playlists not found` })
+        }
+        return res.status(200).json({ success: true, playlist: playlists })
+    }).catch(err => console.log(err))
+}
+
+filterOwnPlaylists = async (req, res) => {
+    let text = req.params.name;
+    console.log(text);
+
+    const filteredPlaylist = new RegExp(text, "i");
+    console.log(filteredPlaylist);
+
+    await Playlist.find({name: filteredPlaylist}, (err, playlists) => {
+        if (err){
+            return res.status(400).json({
+                success: false,
+                error: "No playlist found"
+            })
+        }
+        if (!playlists.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Playlists not found` })
+        }
+        return res.status(200).json({ success: true, playlist: playlists })
+    }).catch(err => console.log(err));
+}
+
 module.exports = {
     createPlaylist,
     deletePlaylist,
@@ -338,5 +386,7 @@ module.exports = {
     getPlaylists,
     updatePlaylist,
     duplicatePlaylist,
-    addComment
+    addComment,
+    getPublishedPlaylists,
+    filterOwnPlaylists
 }

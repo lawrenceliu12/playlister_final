@@ -9,7 +9,8 @@ import {
   LoginScreen,
   RegisterScreen,
   WorkspaceScreen,
-  AppBanner
+  AppBanner,
+  FilterAll
 } from './components'
 
 const App = () => {
@@ -23,6 +24,7 @@ const App = () => {
             <Route path="/login/" exact component={LoginScreen} />
             <Route path="/register/" exact component={RegisterScreen} />
             <Route path="/playlist/:id" exact component={WorkspaceScreen} />
+            <Route path="/all/" exact component={FilterAll} />
           </Switch>
         </GlobalStoreContextProvider>
       </AuthContextProvider>
