@@ -49,6 +49,17 @@ function ListCard(props) {
         }
     }
 
+    function handleLoadList2(event, id){
+        console.log("Does it get here");
+        if (!event.target.disabled){
+            let _id = event.target.id;
+            if (_id.indexOf('list-card-text-') >= 0){
+                _id = ("" + _id).substring("list-card-text-".length);
+            }
+            store.setSelectedList(id);
+        }
+    }
+
     function handleToggleEdit(event) {
         event.stopPropagation();
         toggleEdit();
@@ -83,34 +94,78 @@ function ListCard(props) {
 
     function handleCloseList(event){
         event.stopPropagation();
-        store.closeCurrentList();
         setOpen(false);
+        store.closeCurrentList();
     }
 
-    function handleOpenListCard(event){
-        console.log("open list");
-        console.log(idNamePair);
-        if (store.currentList && store.currentList._id === idNamePair._id){
-            cardElement =
+    function handleOpen(event, id){
+        event.stopPropagation();
+        setOpen(true);
+        handleLoadList(event, id);
+    }
+
+    function openSelectedList(event, id){
+        cardElement =
+        <>
+            
+        </>
+    }
+
+    function handleUndo(event){
+        store.undo();
+    }
+
+    function handleRedo(event){
+        store.redo();
+    }
+
+    function handlePublish(event){
+        store.publish(idNamePair._id);
+    }
+
+    function handleDuplicate(event){
+        store.duplicateList(idNamePair);
+    }
+
+    let selectClass = "unselected-list-card";
+    if (selected) {
+        selectClass = "selected-list-card";
+    }
+    let cardStatus = false;
+    if (store.isListNameEditActive) {
+        cardStatus = true;
+    }
+    let modalJSX = "";
+    if (store.isEditSongModalOpen()) {
+        modalJSX = <MUIEditSongModal />;
+    }
+    else if (store.isRemoveSongModalOpen()) {
+        modalJSX = <MUIRemoveSongModal />;
+    }
+
+    if (store.currentList && store.currentList._id === idNamePair._id){
+        cardElement =
             <>
             <ListItem
                 id={idNamePair._id}
                 key={idNamePair._id}
-                sx={{ marginTop: '15px', display: 'flex', p: 1, bgcolor: 'cornflowerblue', borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomStyle: 'solid', height: '15%'}}
+                sx = {publish ? {"&:hover": {bgcolor: '#FFB6C1'}, marginTop: '15px', display: 'flex', p: 1, bgcolor: '#FFB6C1', borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomStyle: 'solid', height: '15%'} 
+                :{"&:hover": {bgcolor: 'cornflowerblue'}, marginTop: '15px', display: 'flex', p: 1, bgcolor: 'cornflowerblue', borderTopLeftRadius: '20px', borderTopRightRadius: '20px', borderBottomStyle: 'solid', height: '15%'}}
                 style={{ width: '100%', fontSize: '34pt' }}
-                // button
-                // onClick={(event) => {
-                //     handleLoadList(event, idNamePair._id);
-                // }}
+                button
+                onClick={(event) => {
+                    handleLoadList2(event, idNamePair._id);
+                    openSelectedList(event, idNamePair._id);
+                }}
                 >
                 <Box sx={{ p: 1, flexGrow: 1 }}>
                     {idNamePair.name}
-                    <Box sx = {{p: 1,fontSize: '10pt'}}>
+                    <Box sx = {{p: 0,fontSize: '10pt'}}>
                         By: {auth.user.firstName} {auth.user.lastName}
                     </Box>
                     {
                         publishDate &&   
-                        <Box sx = {{p: 1,fontSize: '10pt'}}>
+                        <Box sx = {{p: 0,fontSize: '10pt'}}>
                             Published: {publishDate}
                         </Box>
                     }
@@ -119,8 +174,6 @@ function ListCard(props) {
                     <IconButton onClick={handleToggleEdit} disabled = {publish} aria-label='edit'>
                         <EditIcon style={{fontSize:'34pt'}} />
                     </IconButton>
-                </Box>
-                <Box sx={{ p: 1 }}>
                     <IconButton onClick={(event) => {
                             handleCloseList(event);
                         }}>
@@ -128,10 +181,12 @@ function ListCard(props) {
                     </IconButton>
                 </Box>
             </ListItem>
-            <Box id ='song-cards-container' sx = {{maxHeight: 350, overflowY:'scroll', bgcolor: 'cornflowerblue', borderBottomLeftRadius: '20px', borderBottomRightRadius: '50px'}}>
+            <Box id ='song-cards-container' 
+                sx = {publish ? {maxHeight: 350, overflowY:'scroll', bgcolor: '#FFB6C1', borderBottomLeftRadius: '20px', borderBottomRightRadius: '50px'} : 
+                {maxHeight: 350, overflowY:'scroll', bgcolor: 'cornflowerblue', borderBottomLeftRadius: '20px', borderBottomRightRadius: '50px'}}>
                 <List 
                     id="playlist-cards" 
-                    sx={{ width: '100%', bgcolor: 'cornflowerblue', height: '100%' }}
+                    sx={publish ? { width: '100%', bgcolor: '#FFB6C1', height: '100%' } : { width: '100%', bgcolor: 'cornflowerblue', height: '100%' }}
                 >
                     {
                         store.currentList.songs.map((song, index) => (
@@ -168,65 +223,26 @@ function ListCard(props) {
                 </Box>
             </Box>
             </>
-        }
-    }
-
-    function handleUndo(event){
-        store.undo();
-    }
-
-    function handleRedo(event){
-        store.redo();
-    }
-
-    function handlePublish(event){
-        store.publish(idNamePair._id);
-    }
-
-    function handleDuplicate(event){
-        store.duplicateList(idNamePair);
-    }
-
-    let selectClass = "unselected-list-card";
-    if (selected) {
-        selectClass = "selected-list-card";
-    }
-    let cardStatus = false;
-    if (store.isListNameEditActive) {
-        cardStatus = true;
-    }
-    let modalJSX = "";
-    if (store.isEditSongModalOpen()) {
-        modalJSX = <MUIEditSongModal />;
-    }
-    else if (store.isRemoveSongModalOpen()) {
-        modalJSX = <MUIRemoveSongModal />;
-    }
-
-    if (store.currentList && store.currentList._id === idNamePair._id && open){
-        handleOpenListCard();
     }
     else{
-        console.log(idNamePair._id);
         cardElement =
+        <>
+        {publish ?
             <ListItem
                 id={idNamePair._id}
                 key={idNamePair._id}
-                sx={{ marginTop: '15px', display: 'flex', p: 1, bgcolor: 'cornflowerblue', borderRadius: '20px', height: '15%'}}
-                style={{ width: '100%', fontSize: '28pt' }}
-                // button
-                // onClick={(event) => {
-                //     handleLoadList(event, idNamePair._id)          
-                // }}
-            >
+                sx={{ "&:hover": {bgcolor: '#FFB6C1'}, marginTop: '15px', display: 'flex', p: 1, bgcolor: '#FFB6C1', borderRadius: '20px'}}
+                style={{ width: '100%', fontSize: '35pt', height: 'auto' }}
+                button
+                onClick={(event) => {handleLoadList2(event, idNamePair._id)}}>
                 <Box sx={{ p: 1, flexGrow: 1 }}>
                     {idNamePair.name}
-                    <Box sx = {{p: 1,fontSize: '10pt'}}>
+                    <Box sx = {{p: 1, fontSize: '12pt'}}>
                         By: {auth.user.firstName} {auth.user.lastName}
                     </Box>
                     {
                         publishDate &&   
-                        <Box sx = {{p: 1,fontSize: '10pt'}}>
+                        <Box sx = {{p: 1, fontSize: '12pt'}}>
                             Published: {publishDate}
                         </Box>
                     }
@@ -235,18 +251,38 @@ function ListCard(props) {
                     <IconButton onClick={handleToggleEdit} disabled = {publish} aria-label='edit'>
                         <EditIcon style={{fontSize:'34pt'}} />
                     </IconButton>
-                </Box>
-                <Box sx={{ p: 1 }}>
                     <IconButton onClick={(event) => {
-                            console.log("I am right here");
-                            setOpen(true);
-                            handleLoadList(event, idNamePair._id)
-                            // handleOpenListCard(event, idNamePair)
-                        }}>
+                        handleOpen(event, idNamePair._id)}}>
                         <ExpandMoreIcon style={{fontSize:'34pt'}} />
                     </IconButton>
-                </Box>
+            </Box>
             </ListItem>
+            :
+            <ListItem
+                id={idNamePair._id}
+                key={idNamePair._id}
+                sx={{ "&:hover": {bgcolor: 'cornflowerblue'}, marginTop: '15px', display: 'flex', p: 1, bgcolor: 'cornflowerblue', borderRadius: '20px', height: '15%'}}
+                style={{ width: '100%', fontSize: '35pt', height: 'auto' }}
+                button
+                onClick={(event) => {handleLoadList2(event, idNamePair._id)}}>
+                <Box sx={{ p: 1, flexGrow: 1 }}>
+                    {idNamePair.name}
+                    <Box sx = {{fontSize: '12pt'}}>
+                        By: {auth.user.firstName} {auth.user.lastName}
+                    </Box>
+                </Box>
+                <Box sx={{ p: 1 }}>
+                    <IconButton onClick={handleToggleEdit} disabled = {publish} aria-label='edit'>
+                        <EditIcon style={{fontSize:'34pt'}} />
+                    </IconButton>
+                    <IconButton onClick={(event) => {
+                        handleOpen(event, idNamePair._id)}}>
+                        <ExpandMoreIcon style={{fontSize:'34pt'}} />
+                    </IconButton>
+            </Box>
+            </ListItem>
+        }
+        </>
     }
 
     

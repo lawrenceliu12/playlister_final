@@ -32,7 +32,7 @@ const HomeScreen = () => {
     let listCard = "";
     if (store) {
         listCard = 
-            <List sx={{ width: '90%', left: '5%', borderRadius: '20px', height: '100%'}}>
+            <List sx={{ width: '90%', left: '5%', borderRadius: '20px', height: '100%', fontSize: '50pt'}}>
             {
                 store.userPlaylist &&
                 store.userPlaylist.map((pair) => (
@@ -83,7 +83,7 @@ const HomeScreen = () => {
                     COMMENTS
                 </Button>
                 <br/>
-                {playerOrComment ? <YoutubePlayer/> : <Comment/>}
+                {playerOrComment ? <YoutubePlayer/> : <Comment />}
             </div>
         </div>
         </>)

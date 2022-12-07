@@ -18,6 +18,7 @@ function AddSongBottomCard(props) {
             id='add-song-card'
             className={cardClass}
             textAlign='center'
+            style = {publish ? {backgroundColor: '#FFB6C1'} : {backgroundColor: 'cornflowerblue'}}
         >
             <Button
                 sx={{transform:"translate(-5%, -5%)"}}

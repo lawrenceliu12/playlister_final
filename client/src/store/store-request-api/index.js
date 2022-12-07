@@ -51,9 +51,17 @@ export const getPlaylists = (user = null) => {
 }
 
 export const duplicatePlaylist = (listNamePair) => {
-    console.log("In duplicate Playlist store-request-api");
     return api.post(`/duplicate/`, {
         data: listNamePair
+    });
+}
+
+export const addComment = (username, comment, playlistId) => {
+    console.log("In the add comment store-request-api call");
+    return api.put(`/comment/${playlistId}`, {
+        username: username,
+        comment: comment,
+        playlistId: playlistId
     });
 }
 
@@ -64,7 +72,8 @@ const apis = {
     getPlaylistPairs,
     updatePlaylistById,
     getPlaylists,
-    duplicatePlaylist
+    duplicatePlaylist,
+    addComment,
 }
 
 export default apis

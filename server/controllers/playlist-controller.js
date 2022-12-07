@@ -285,6 +285,51 @@ duplicatePlaylist = async(req, res) => {
     });
 }
 
+addComment = async(req, res) => {
+    let playlistId = req.body.playlistId;
+    let comment = req.body.comment;
+    console.log(comment);
+    let username = req.body.username;
+    console.log(username);
+
+    //check if playlist is published
+    Playlist.findOne({_id: playlistId}, (err, playlist) => {
+        if (err){
+            return res.status(400).json({
+                success: false,
+                error: "Cannot find playlistId"
+            })
+        }
+
+        //check if playlist.publish is false
+        if (!playlist.publish){
+            return res.status(401).json({
+                success: false,
+                error: "Playlist is not published/public"
+            })
+        }
+
+        //PLAYLIST IS PUBLISHED
+        playlist.comments.push({
+            username: username,
+            comment: comment,
+        })
+
+        playlist.save().then(() => {
+            return res.status(200).json({
+                success: true,
+                playlist: playlist
+            })
+        })
+        .catch(error => {
+            return res.status(500).json({
+                success: false,
+                error: "Playlist comments could not be saved."
+            })
+        })
+    });
+}
+
 module.exports = {
     createPlaylist,
     deletePlaylist,
@@ -292,5 +337,6 @@ module.exports = {
     getPlaylistPairs,
     getPlaylists,
     updatePlaylist,
-    duplicatePlaylist
+    duplicatePlaylist,
+    addComment
 }

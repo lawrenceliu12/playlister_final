@@ -60,6 +60,7 @@ function SongCard(props) {
             onDrop={handleDrop}
             draggable="true"
             onClick={handleClick}
+            style = {publish ? {backgroundColor: '#FFB6C1'} : {backgroundColor: 'cornflowerblue'}}
         >
             {/* <a
                 id={'song-' + index + '-link'}

@@ -22,7 +22,7 @@ const playlistSchema = new Schema(
         comments: {type: [{
             username: String,
             comment: String,
-        }]}
+        }]},
     },
     { timestamps: true },
 )

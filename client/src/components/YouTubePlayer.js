@@ -30,9 +30,9 @@ export default function YoutubePlayer(){
 
   let player;
 
-  if (store.currentList && store.currentList.songs){
-    length = store.currentList.songs.length;
-    playlistName = store.currentList.name;
+  if (store.selectedList && store.selectedList.songs){
+    length = store.selectedList.songs.length;
+    playlistName = store.selectedList.name;
     for (let i = 0; i < length; i++){
       // let name = store.currentList.songs[i].title;
       // let artist = store.currentList.songs[i].artist;
@@ -41,13 +41,13 @@ export default function YoutubePlayer(){
       // names[i] = name;
       // artists[i] = artist;
       // playlist[i] = id;
-      names[i] = store.currentList.songs[i].title;
-      artists[i] = store.currentList.songs[i].artist;
-      playlist[i] = store.currentList.songs[i].youTubeId;
+      names[i] = store.selectedList.songs[i].title;
+      artists[i] = store.selectedList.songs[i].artist;
+      playlist[i] = store.selectedList.songs[i].youTubeId;
     }
-    if (store.currentList.songs.length !== 0){
-      name = store.currentList.songs[songCount].title;
-      artist = store.currentList.songs[songCount].artist;
+    if (store.selectedList.songs.length !== 0){
+      name = store.selectedList.songs[songCount].title;
+      artist = store.selectedList.songs[songCount].artist;
     }
   }
 
@@ -199,7 +199,8 @@ export default function YoutubePlayer(){
         <IconButton onClick = {handleStop} sx = {{color: 'black'}} disabled = {vidPlaying === false}>
           <StopIcon/>
         </IconButton>
-        <IconButton onClick = {handlePlay} sx = {{color: 'black'}} disabled = {vidPlaying === true || store.currentList === null || store.currentList.songs.length === 0}>
+        {/* store.selectedList === null || store.selectedList.songs.length === 0 */}
+        <IconButton onClick = {handlePlay} sx = {{color: 'black'}} disabled = {vidPlaying === true}>
           <PlayArrowIcon/>
         </IconButton>
         <IconButton onClick = {handleSkip} sx = {{color: 'black'}} disabled = {songCount + 1 >= length}>
