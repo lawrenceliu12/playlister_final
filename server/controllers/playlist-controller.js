@@ -239,11 +239,58 @@ updatePlaylist = async (req, res) => {
         asyncFindUser(playlist);
     })
 }
+
+duplicatePlaylist = async(req, res) => {
+    let body = req.body;
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a Playlist',
+        })
+    }
+    let userId = req.userId;
+    User.findOne({_id: userId}, (err, user) => {
+        let userEmail = user.email;
+
+        if (err){
+            return res.status(401).json({
+                success: false,
+                error: 'Could not find an email associated with id'
+            })
+        }
+
+        const dupPlaylist = new Playlist({
+            name: body.data.name, 
+            songs: body.data.songs,
+            ownerEmail: userEmail,
+        });
+
+        user.playlists.push(dupPlaylist);
+        user
+            .save()
+            .then(() => {
+                dupPlaylist
+                    .save()
+                    .then(() => {
+                        return res.status(201).json({
+                            playlist: dupPlaylist
+                        })
+                    })
+                    .catch(error => {
+                        return res.status(400).json({
+                            errorMessage: 'Playlist Not Created!'
+                        })
+                    })
+            });
+    });
+}
+
 module.exports = {
     createPlaylist,
     deletePlaylist,
     getPlaylistById,
     getPlaylistPairs,
     getPlaylists,
-    updatePlaylist
+    updatePlaylist,
+    duplicatePlaylist
 }

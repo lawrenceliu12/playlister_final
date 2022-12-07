@@ -184,7 +184,7 @@ function ListCard(props) {
     }
 
     function handleDuplicate(event){
-        store.createNewList(idNamePair);
+        store.duplicateList(idNamePair);
     }
 
     let selectClass = "unselected-list-card";

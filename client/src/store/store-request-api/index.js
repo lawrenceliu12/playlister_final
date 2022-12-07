@@ -50,13 +50,21 @@ export const getPlaylists = (user = null) => {
     });
 }
 
+export const duplicatePlaylist = (listNamePair) => {
+    console.log("In duplicate Playlist store-request-api");
+    return api.post(`/duplicate/`, {
+        data: listNamePair
+    });
+}
+
 const apis = {
     createPlaylist,
     deletePlaylistById,
     getPlaylistById,
     getPlaylistPairs,
     updatePlaylistById,
-    getPlaylists
+    getPlaylists,
+    duplicatePlaylist
 }
 
 export default apis

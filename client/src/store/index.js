@@ -33,6 +33,7 @@ export const GlobalStoreActionType = {
     HIDE_MODALS: "HIDE_MODALS",
     PUBLISH_PLAYLIST: "PUBLISH_PLAYLIST",
     GET_PLAYLIST_FROM_USER: "GET_PLAYLIST_FROM_USER",
+    DUPLICATE_LIST: "DUPLICATE_LIST",
 }
 
 // WE'LL NEED THIS TO PROCESS TRANSACTIONS
@@ -248,6 +249,21 @@ function GlobalStoreContextProvider(props) {
                     listIdMarkedForDeletion: null,
                     listMarkedForDeletion: null,
                     userPlaylist: payload
+                })
+            }
+
+            case GlobalStoreActionType.DUP_LIST: {                
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    currentList: payload,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null,
+                    userPlaylist: store.userPlaylist
                 })
             }
 
@@ -612,6 +628,30 @@ function GlobalStoreContextProvider(props) {
             }
         }
         getLists(user);
+    }
+
+    store.duplicateList = function(listNamePair){
+        console.log("Inside duplicate");
+        console.log(listNamePair);
+        async function duplicatePlaylist(listNamePair){
+            let response = await api.duplicatePlaylist(listNamePair);
+            if (response.status === 201) {
+                tps.clearAllTransactions();
+                let dupList = response.data.playlist;
+                storeReducer({
+                    type: GlobalStoreActionType.DUPLICATE_LIST,
+                    payload: dupList
+                });
+    
+                // IF IT'S A VALID LIST THEN LET'S START EDITING IT
+                // history.push("/playlist/" + newList._id);
+                store.getUserPlaylists();
+            }
+            else {
+                console.log("API FAILED TO DUPLICATE THE LIST");
+            }
+        }
+        duplicatePlaylist(listNamePair);
     }
 
     store.undo = function () {
