@@ -12,8 +12,6 @@ function AddSongBottomCard(props) {
         store.addNewSong();
     }
 
-    console.log(publish);
-
     let cardClass = "list-card unselected-list-card";
     return (
         <Box

@@ -184,7 +184,7 @@ function ListCard(props) {
     }
 
     function handleDuplicate(event){
-        console.log("Duplicate TBD");
+        store.createNewList(idNamePair);
     }
 
     let selectClass = "unselected-list-card";
@@ -202,38 +202,6 @@ function ListCard(props) {
     else if (store.isRemoveSongModalOpen()) {
         modalJSX = <MUIRemoveSongModal />;
     }
-    //store.currentList ===
-    // if (!open){
-    //     console.log("Hello i am here");
-    //     cardElement =
-    //         <ListItem
-    //             id={idNamePair._id}
-    //             key={idNamePair._id}
-    //             sx={{ marginTop: '15px', display: 'flex', p: 1, bgcolor: '#486093', borderRadius: '20px', height: '15%'}}
-    //             style={{ width: '100%', fontSize: '34pt' }}
-    //             button
-    //             onClick={(event) => {
-    //                 handleLoadList(event, idNamePair._id)          
-    //             }}
-    //         >
-    //             <Box sx={{ p: 1, flexGrow: 1 }}>{idNamePair.name}</Box>
-    //             <Box sx={{ p: 1 }}>
-    //                 <IconButton onClick={handleToggleEdit} aria-label='edit'>
-    //                     <EditIcon style={{fontSize:'34pt'}} />
-    //                 </IconButton>
-    //             </Box>
-    //             <Box sx={{ p: 1 }}>
-    //                 <IconButton onClick={(event) => {
-    //                         console.log("I am right here");
-    //                         setOpen(true);
-    //                         handleLoadList(event, idNamePair._id)
-    //                         handleOpenListCard(event, idNamePair)
-    //                     }}>
-    //                     <ExpandMoreIcon style={{fontSize:'34pt'}} />
-    //                 </IconButton>
-    //             </Box>
-    //         </ListItem>
-    // }
 
     if (store.currentList && store.currentList._id === idNamePair._id && open){
         handleOpenListCard();
