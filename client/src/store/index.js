@@ -346,24 +346,6 @@ function GlobalStoreContextProvider(props) {
                     publishedPlaylists: payload
                 })
             }
-
-            case GlobalStoreActionType.FILTER_OWN_PLAYLIST: {
-                return setStore({
-                    currentModal: CurrentModal.NONE,
-                    idNamePairs: store.idNamePairs,
-                    currentList: store.currentList,
-                    currentSongIndex: -1,
-                    currentSong: null,
-                    newListCounter: store.newListCounter,
-                    listNameActive: false,
-                    listIdMarkedForDeletion: null,
-                    listMarkedForDeletion: null,
-                    userPlaylist: store.userPlaylist,
-                    selectedList: store.selectedList,
-                    publishedPlaylists: store.publishedPlaylists,
-                })
-            }
-
             default:
                 return store;
         }
@@ -522,15 +504,15 @@ function GlobalStoreContextProvider(props) {
             if (response.data.success) {
                 let playlist = response.data.playlist;
 
-                response = await api.updatePlaylistById(playlist._id, playlist);
-                console.log(response);
-                if (response.data.success) {
+                // response = await api.updatePlaylistById(playlist._id, playlist);
+                // console.log(response);
+                // if (response.data.success) {
                     storeReducer({
                         type: GlobalStoreActionType.SET_CURRENT_LIST,
                         payload: playlist
                     });
                     
-                }
+                // }
             }
         }
         asyncSetCurrentList(id);
@@ -542,16 +524,16 @@ function GlobalStoreContextProvider(props) {
             console.log(response);
             if (response.data.success) {
                 let playlist = response.data.playlist;
-                response = await api.updatePlaylistById(playlist._id, playlist);
-                console.log(response);
-                if (response.data.success) {
-                    console.log("Succeeded all")
+                // response = await api.updatePlaylistById(playlist._id, playlist);
+                // console.log(response);
+                // if (response.data.success) {
+                //     console.log("Succeeded all")
                     storeReducer({
                         type: GlobalStoreActionType.SET_SELECTED_LIST,
                         payload: playlist
                     });
                     tps.clearAllTransactions();
-                }
+                // }
             }
         }
         asyncSetSelectedList(id);
@@ -820,9 +802,9 @@ function GlobalStoreContextProvider(props) {
         filterPublishedPlaylists();
     }
 
-    store.filterOwnPlaylists = function (text){
-        async function filterText(text){
-            let response = await api.filterOwnPlaylists(text);
+    store.filterOwnPlaylists = function (text, user){
+        async function filterText(text, user){
+            let response = await api.filterOwnPlaylists(text, user);
             if (response.data.success){
                 let playlist = response.data.playlist;
                 console.log(playlist);
@@ -832,7 +814,44 @@ function GlobalStoreContextProvider(props) {
                 })
             }
         }
-        filterText(text);
+        filterText(text, user);
+    }
+
+    store.filterAllPlaylists = function (text){
+        async function filterAll(text){
+            let response = await api.filterAllPlaylists(text);
+            if (response.data.success){
+                let playlist = response.data.playlist;
+                console.log(playlist);
+                storeReducer({
+                    type: GlobalStoreActionType.GET_PUBLISHED_PLAYLISTS,
+                    payload: playlist
+                })
+            }
+        }
+        filterAll(text);
+    }
+
+    store.renderNoPublishedPlaylists = function() {
+        storeReducer({
+            type: GlobalStoreActionType.GET_PUBLISHED_PLAYLISTS,
+            payload: []
+        })
+    }
+
+    store.filterUsers = function (text){
+        async function filterUserPlaylist(text){
+            let response = await api.filterUser(text);
+            if (response.data.success){
+                let playlist = response.data.playlist;
+                console.log(playlist);
+                storeReducer({
+                    type: GlobalStoreActionType.GET_PUBLISHED_PLAYLISTS,
+                    payload: playlist
+                })
+            }
+        }
+        filterUserPlaylist(text);
     }
 
     store.undo = function () {

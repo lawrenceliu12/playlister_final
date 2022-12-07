@@ -11,6 +11,7 @@ import WorkspaceScreen from "./WorkspaceScreen";
 import Statusbar from "./Statusbar";
 import AppBanner from "./AppBanner";
 import FilterAll from "./FilterAll";
+import FilterUser from "./FIlterUser";
 
 export{
     HomeWrapper,
@@ -26,4 +27,5 @@ export{
     Statusbar,
     AppBanner,
     FilterAll,
+    FilterUser
 }

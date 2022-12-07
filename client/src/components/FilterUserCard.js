@@ -20,7 +20,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import Button from '@mui/material/Button';
 
 
-const FilterAllCards = (props) => {
+const FilterUserCard = (props) => {
     const { store } = useContext(GlobalStoreContext);
     const { auth } = useContext(AuthContext);
     const [editActive, setEditActive] = useState(false);
@@ -203,4 +203,4 @@ const FilterAllCards = (props) => {
     );
 }
 
-export default FilterAllCards
+export default FilterUserCard

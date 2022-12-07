@@ -92,10 +92,14 @@ getPlaylistById = async (req, res) => {
             return res.status(400).json({ success: false, error: err });
         }
         console.log("Found list: " + JSON.stringify(list));
+        let publish = list.publish;
 
+        if (publish){
+            return res.status(200).json({success: true, playlist: list})
+        }
         // DOES THIS LIST BELONG TO THIS USER?
         async function asyncFindUser(list) {
-            await User.findOne({ email: list.ownerEmail }, (err, user) => {
+            await User.findOne({ email: list.ownerEmail}, (err, user) => {
                 console.log("user._id: " + user._id);
                 console.log("req.userId: " + req.userId);
                 if (user._id == req.userId) {
@@ -357,6 +361,31 @@ getPublishedPlaylists = async(req, res) => {
 
 filterOwnPlaylists = async (req, res) => {
     let text = req.params.name;
+    let user = req.params.user;
+    console.log(text);
+    console.log(user);
+
+    const filteredPlaylist = new RegExp(text, "i");
+    console.log(filteredPlaylist);
+
+    await Playlist.find({name: filteredPlaylist, username: user}, (err, playlists) => {
+        if (err){
+            return res.status(400).json({
+                success: false,
+                error: "No playlist found"
+            })
+        }
+        if (!playlists.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Playlists not found` })
+        }
+        return res.status(200).json({ success: true, playlist: playlists })
+    }).catch(err => console.log(err));
+}
+
+filterAllPlaylists = async (req, res) => {
+    let text = req.params.name;
     console.log(text);
 
     const filteredPlaylist = new RegExp(text, "i");
@@ -378,6 +407,34 @@ filterOwnPlaylists = async (req, res) => {
     }).catch(err => console.log(err));
 }
 
+filterUser = async (req, res) => {
+    let text = req.params.name;
+    let playlist = [];
+    console.log(text);
+
+    await Playlist.find({publish: true}, (err, playlists) => {
+        if (err){
+            return res.status(400).json({
+                success: false,
+                error: "No playlist found"
+            })
+        }
+        if (!playlists.length) {
+            return res
+                .status(404)
+                .json({ success: false, error: `Playlists not found` })
+        }
+        for (let i = 0; i < playlists.length; i++){
+            if (playlists[i].username.includes(text)){
+                playlist.push(playlists[i]);
+            }
+        }
+        if (playlist.length){
+            return res.status(200).json({ success: true, playlist: playlist})
+        }
+    }).catch(err => console.log(err));
+}
+
 module.exports = {
     createPlaylist,
     deletePlaylist,
@@ -388,5 +445,7 @@ module.exports = {
     duplicatePlaylist,
     addComment,
     getPublishedPlaylists,
-    filterOwnPlaylists
+    filterOwnPlaylists,
+    filterAllPlaylists,
+    filterUser
 }

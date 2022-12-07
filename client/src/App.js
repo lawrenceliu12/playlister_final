@@ -10,7 +10,8 @@ import {
   RegisterScreen,
   WorkspaceScreen,
   AppBanner,
-  FilterAll
+  FilterAll,
+  FilterUser
 } from './components'
 
 const App = () => {
@@ -25,6 +26,7 @@ const App = () => {
             <Route path="/register/" exact component={RegisterScreen} />
             <Route path="/playlist/:id" exact component={WorkspaceScreen} />
             <Route path="/all/" exact component={FilterAll} />
+            <Route path="/user/"exact component={FilterUser} />
           </Switch>
         </GlobalStoreContextProvider>
       </AuthContextProvider>

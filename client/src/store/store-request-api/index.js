@@ -68,9 +68,18 @@ export const addComment = (username, comment, playlistId) => {
 }
 
 export const getPublishedPlaylists = () => api.get(`/published`);
-export const filterOwnPlaylists = (text) => {
-    return api.get(`/filter/${text}`, {
+
+export const filterOwnPlaylists = (text,user) => {
+    return api.get(`/filter/${text}/${user}`, {
     });
+}
+export const filterAllPlaylists = (text) => {
+    return api.get(`/filterAll/${text}`, {
+    });
+}
+
+export const filterUser = (text) => {
+    return api.get(`/filterUser/${text}`, {});
 }
 
 const apis = {
@@ -84,6 +93,8 @@ const apis = {
     addComment,
     getPublishedPlaylists,
     filterOwnPlaylists,
+    filterAllPlaylists,
+    filterUser
 }
 
 export default apis

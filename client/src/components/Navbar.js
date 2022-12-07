@@ -16,11 +16,25 @@ import Button from '@mui/material/Button';
 const Navbar = () => {
   // const { auth } = useState(AuthContext);
   const { store } = useContext(GlobalStoreContext);
+  const { auth } = useContext(AuthContext);
   const [ route, setRoute ] = useState(0);
   let location = useLocation();
   const history = useHistory();
 
-  const [text, setText] = useState("");  
+  const [text, setText] = useState(""); 
+  
+  useEffect(() => {
+    if (location.pathname === "/"){
+      setRoute(0);
+    }
+    else if (location.pathname === "/all/"){
+      setRoute(1);
+    }
+    else if (location.pathname === "/user/"){
+      setRoute(2);
+    }
+}, [location]);
+
   function handleHome(event){
     if (location.pathname === "/"){
       history.go(0);
@@ -28,17 +42,24 @@ const Navbar = () => {
     else{
       history.push("/");
     }
-    setRoute(0);
   }
 
   function handleGroup(event){
-    history.push("/published");
-    setRoute(1);
+    if (location.pathname === "/all/"){
+      history.go(0);
+    }
+    else{
+      history.push("/all/");
+    }
   }
 
   function handlePerson(event){
-    console.log("Person");
-    setRoute(2);
+    if (location.pathname === "/user/"){
+      history.go(0);
+    }
+    else{
+      history.push("/user/");
+    }
   }
   function handleSort(event){
     console.log("Sort")
@@ -47,16 +68,28 @@ const Navbar = () => {
   function handleKeyPress(event){
     if (event.code === "Enter") {
       if (route === 0){
+        console.log("hello")
         if (text === ""){
           store.renderNoPlaylists();
           return;
         }
         else{
-          store.filterOwnPlaylists(text);
+          store.filterOwnPlaylists(text, auth.user.username);
         }
       }
-      if (route === 1){
-        console.log("yuh");
+      else if (route === 1){
+        console.log("sdgsd")
+        if (text === ""){
+          store.renderNoPublishedPlaylists();
+          return;
+        }
+        else{
+          store.filterAllPlaylists(text);
+        }
+      }
+      else if (route === 2){
+        console.log("hey");
+        store.filterUsers(text);
       }
     }
   }
@@ -72,16 +105,13 @@ const Navbar = () => {
   return (
     <div className='navbar' style = {{display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between'}}>
         <div>
-            <Button style={{backgroundColor: 'transparent', height: '100%', borderRadius: '0'}} onClick = {handleHome}>
+            <Button style={{backgroundColor: 'transparent', height: '100%', borderRadius: '0'}} onClick = {handleHome} component = {Link} to ="/">
                 <HomeIcon />
-                {/* <Link to = "/">
-                    <HomeIcon/>
-                </Link> */}
             </Button>
             <Button style={{backgroundColor: 'transparent', height: '100%', borderRadius: '0'}} onClick = {handleGroup} component = {Link} to ="/all/">
                 <GroupsIcon />
             </Button>
-            <Button style={{backgroundColor: 'transparent', height: '100%', borderRadius: '0'}} onClick = {handlePerson}>
+            <Button style={{backgroundColor: 'transparent', height: '100%', borderRadius: '0'}} onClick = {handlePerson} component = {Link} to ="/user/">
                 <PersonIcon />
             </Button>
         </div>
