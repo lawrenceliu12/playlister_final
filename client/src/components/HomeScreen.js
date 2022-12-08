@@ -3,7 +3,6 @@ import { GlobalStoreContext } from '../store'
 import ListCard from './ListCard.js'
 import MUIDeleteModal from './MUIDeleteModal'
 
-import AddIcon from '@mui/icons-material/Add';
 import Fab from '@mui/material/Fab'
 import List from '@mui/material/List';
 import Typography from '@mui/material/Typography'
@@ -26,9 +25,6 @@ const HomeScreen = () => {
         store.getUserPlaylists();
     }, []);
 
-    function handleCreateNewList() {
-        store.createNewList();
-    }
     let listCard = "";
     if (store) {
         listCard = 
@@ -51,16 +47,6 @@ const HomeScreen = () => {
     }
     return (
         <>
-        <div style = {{position: 'absolute', bottom: '0', left: '65%', width: '100%'}}>
-            <Fab 
-                color="primary" 
-                aria-label="add"
-                id="add-list-button"
-                onClick={handleCreateNewList}>
-                <AddIcon />
-            </Fab>
-            <Typography variant="h3">Your Lists</Typography>
-        </div>
         <div id="playlist-selector">
             <div id="list-selector-heading">
             </div>

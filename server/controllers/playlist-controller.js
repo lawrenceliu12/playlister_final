@@ -154,6 +154,7 @@ getPlaylistPairs = async (req, res) => {
 getPlaylists = async (req, res) => {
     let userFilter = {};
     let body = req.body;
+    console.log(body);
 
     if (!body || !body.user){
         userFilter = {
@@ -172,11 +173,11 @@ getPlaylists = async (req, res) => {
         if (err) {
             return res.status(400).json({ success: false, error: err })
         }
-        if (!playlists.length) {
-            return res
-                .status(404)
-                .json({ success: false, error: `Playlists not found` })
-        }
+        // if (!playlists.length) {
+        //     return res
+        //         .status(404)
+        //         .json({ success: false, error: `Playlists not found` })
+        // }
         return res.status(200).json({ success: true, playlist: playlists })
     }).catch(err => console.log(err))
 }
@@ -216,6 +217,7 @@ updatePlaylist = async (req, res) => {
                     list.publishDate = body.playlist.publishDate;
                     list.likes = body.playlist.likes;
                     list.dislikes = body.playlist.dislikes;
+                    list.listens = body.playlist.listens;
                     list
                         .save()
                         .then(() => {
@@ -435,6 +437,40 @@ filterUser = async (req, res) => {
     }).catch(err => console.log(err));
 }
 
+updateLike = async (req, res) => {
+    const body = req.body;
+    console.log("updatePlaylist: " + JSON.stringify(body));
+    console.log("req.body.name: " + req.body.name);
+
+    if (!body) {
+        return res.status(400).json({
+            success: false,
+            error: 'You must provide a body to update',
+        })
+    }
+
+    Playlist.findOne({ _id: req.body.id }, (err, playlist) => {
+        console.log("playlist found: " + JSON.stringify(playlist));
+        if (err) {
+            return res.status(404).json({
+                err,
+                message: 'Playlist not found!',
+            })
+        }
+
+        playlist.likes = req.body.list.likes;
+        playlist.dislikes = req.body.list.dislikes;
+        playlist.save().then(() => {
+            console.log("SUCCESS!!!");
+            return res.status(200).json({
+                success: true,
+                playlist: playlist,
+                message: 'Playlist updated!',
+            })
+        })
+    });
+}
+
 module.exports = {
     createPlaylist,
     deletePlaylist,
@@ -447,5 +483,6 @@ module.exports = {
     getPublishedPlaylists,
     filterOwnPlaylists,
     filterAllPlaylists,
-    filterUser
+    filterUser,
+    updateLike
 }

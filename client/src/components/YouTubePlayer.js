@@ -80,9 +80,10 @@ export default function YoutubePlayer(){
     else{
       setSongCount(0);
     }
-
+    if(player){
       player.loadVideoById(song);
       player.playVideo();
+    }
   }
 
   // THIS FUNCTION INCREMENTS THE PLAYLIST SONG TO THE NEXT ONE
@@ -162,47 +163,53 @@ export default function YoutubePlayer(){
   //   return songCount < 0;
   // }
 
-
+if (!playlist[songCount]){
+  return <Box sx = {{height: '350', width: '100%', fontSize: '50pt', textAlign: 'center'}}>
+      No video here
+  </Box>
+}
+else{
   return(
-    <>
-    <Youtube videoId={playlist[songCount]}
-        opts={playerOptions}
-        onReady={onPlayerReady}
-        onStateChange={onPlayerStateChange}/>
-    <Box sx={{width: '95%', height: '40%', backgroundColor: 'cornflowerblue', borderRadius: '10px', borderStyle: 'solid', mx: 'auto'}}>
-      <Typography variant = "h4" style={{textAlign: 'center'}}>
-        Now Playing
-      </Typography>
-      <Typography variant="h5">
-        Playlist: {playlistName}
-        <br/>
-      </Typography>
-      <Typography variant="h5">
-        Song #: {songCount + 1}
-        <br/>
-      </Typography>
-      <Typography variant="h5">
-        Title: {name}
-        <br/>
-      </Typography>
-      <Typography variant="h5">
-        Artist: {artist}
-      </Typography>
-      <Box sx={{height: '20%', backgroundColor: '#1A5F85', borderRadius: '10px', textAlign:'center', mx: '5%', borderStyle: 'solid', borderWidth: '2px', boxShadow: '1px 3px 3px pink'}}>
-        <IconButton onClick = {handlePrevious} sx = {{color: 'black'}} disabled = {songCount === 0}>
-          <FastRewindIcon/>
-        </IconButton>
-        <IconButton onClick = {handleStop} sx = {{color: 'black'}} disabled = {vidPlaying === false}>
-          <StopIcon/>
-        </IconButton>
-        {/* store.selectedList === null || store.selectedList.songs.length === 0 */}
-        <IconButton onClick = {handlePlay} sx = {{color: 'black'}} disabled = {vidPlaying === true}>
-          <PlayArrowIcon/>
-        </IconButton>
-        <IconButton onClick = {handleSkip} sx = {{color: 'black'}} disabled = {songCount + 1 >= length}>
-          <FastForwardIcon/>
-        </IconButton>
+      <>
+      <Youtube videoId={playlist[songCount]}
+          opts={playerOptions}
+          onReady={onPlayerReady}
+          onStateChange={onPlayerStateChange}/>
+      <Box sx={{width: '95%', height: '40%', backgroundColor: 'cornflowerblue', borderRadius: '10px', borderStyle: 'solid', mx: 'auto'}}>
+        <Typography variant = "h4" style={{textAlign: 'center'}}>
+          Now Playing
+        </Typography>
+        <Typography variant="h5">
+          Playlist: {playlistName}
+          <br/>
+        </Typography>
+        <Typography variant="h5">
+          Song #: {songCount + 1}
+          <br/>
+        </Typography>
+        <Typography variant="h5">
+          Title: {name}
+          <br/>
+        </Typography>
+        <Typography variant="h5">
+          Artist: {artist}
+        </Typography>
+        <Box sx={{height: '20%', backgroundColor: '#1A5F85', borderRadius: '10px', textAlign:'center', mx: '5%', borderStyle: 'solid', borderWidth: '2px', boxShadow: '1px 3px 3px pink'}}>
+          <IconButton onClick = {handlePrevious} sx = {{color: 'black'}} disabled = {songCount === 0}>
+            <FastRewindIcon/>
+          </IconButton>
+          <IconButton onClick = {handleStop} sx = {{color: 'black'}}>
+            <StopIcon/>
+          </IconButton>
+          {/* store.selectedList === null || store.selectedList.songs.length === 0 */}
+          <IconButton onClick = {handlePlay} sx = {{color: 'black'}}>
+            <PlayArrowIcon/>
+          </IconButton>
+          <IconButton onClick = {handleSkip} sx = {{color: 'black'}} disabled = {songCount + 1 >= length}>
+            <FastForwardIcon/>
+          </IconButton>
+        </Box>
       </Box>
-    </Box>
-    </>);
+      </>);
+  }
 }

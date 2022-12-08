@@ -21,5 +21,6 @@ router.get('/published', auth.verify, PlaylistController.getPublishedPlaylists)
 router.get('/filter/:name/:user', auth.verify, PlaylistController.filterOwnPlaylists)
 router.get('/filterAll/:name', auth.verify, PlaylistController.filterAllPlaylists)
 router.get('/filterUser/:name', auth.verify, PlaylistController.filterUser)
+router.post('/like', auth.verify, PlaylistController.updateLike);
 
 module.exports = router

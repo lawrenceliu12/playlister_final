@@ -31,8 +31,8 @@ export const createPlaylist = (newListName, newSongs, userEmail, username, publi
         ownerEmail: userEmail,
         publish: publish,
         publishDate: publishDate,
-        likes: likes,
-        dislikes: dislikes,
+        likes: [],
+        dislikes: [],
         username: username
     })
 }
@@ -47,7 +47,7 @@ export const updatePlaylistById = (id, playlist) => {
 }
 
 export const getPlaylists = (user = null) => {
-    return api.post(`/playlists/`, {
+    return api.post(`/playlists`, {
         user: user
     });
 }
@@ -82,6 +82,10 @@ export const filterUser = (text) => {
     return api.get(`/filterUser/${text}`, {});
 }
 
+export const updateLike = (id, list) => {
+    return api.post(`/like`, {id: id, list: list});
+}
+
 const apis = {
     createPlaylist,
     deletePlaylistById,
@@ -94,7 +98,8 @@ const apis = {
     getPublishedPlaylists,
     filterOwnPlaylists,
     filterAllPlaylists,
-    filterUser
+    filterUser,
+    updateLike,
 }
 
 export default apis

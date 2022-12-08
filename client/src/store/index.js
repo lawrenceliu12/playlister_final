@@ -346,6 +346,22 @@ function GlobalStoreContextProvider(props) {
                     publishedPlaylists: payload
                 })
             }
+            
+            case GlobalStoreActionType.GET_ALL_LISTS: {
+                return setStore({
+                    currentModal : CurrentModal.NONE,
+                    idNamePairs: store.idNamePairs,
+                    currentList: store.currentList,
+                    currentSongIndex: -1,
+                    currentSong: null,
+                    newListCounter: store.newListCounter + 1,
+                    listNameActive: false,
+                    listIdMarkedForDeletion: null,
+                    listMarkedForDeletion: null,
+                    allLists: payload.allLists,
+                })
+            }
+
             default:
                 return store;
         }
@@ -447,7 +463,6 @@ function GlobalStoreContextProvider(props) {
             let response = await api.deletePlaylistById(id);
             if (response.status === 200) {
                 store.getUserPlaylists();
-                history.push("/");
             }
         }
         processDelete(id);
@@ -697,8 +712,8 @@ function GlobalStoreContextProvider(props) {
                         //     }
                         // }
                         // listPairs(playlist);
+                        store.filterPublishedPlaylists();
                         store.getUserPlaylists();
-                        store.clearAllTransactions();
                     }
                 }
                 updateLists(playlist);
@@ -862,10 +877,23 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.rerenderPublishedList = function(list){
-        storeReducer({
-            type: GlobalStoreActionType.GET_PUBLISHED_PLAYLISTS,
-            payload: list
-        })
+        store.getUserPlaylists();
+        // storeReducer({
+        //     type: GlobalStoreActionType.GET_PUBLISHED_PLAYLISTS,
+        //     payload: list
+        // })
+    }
+
+    store.updateLike = function (id, list){
+        async function update(id, list){
+            let response = await api.updateLike(id, list);
+            if (response.data.success){
+                console.log(response.data.playlist);
+                store.getUserPlaylists();
+                store.filterPublishedPlaylists();
+            }
+        }
+        update(id, list)
     }
 
     store.undo = function () {

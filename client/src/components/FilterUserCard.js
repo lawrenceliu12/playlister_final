@@ -18,6 +18,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 
 import Button from '@mui/material/Button';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import { Typography } from '@mui/material';
 
 
 const FilterUserCard = (props) => {
@@ -77,6 +80,45 @@ const FilterUserCard = (props) => {
         _id = ("" + _id).substring("delete-list-".length);
         store.markListForDeletion(id);
     }
+
+    function handleLike(event){
+        event.stopPropagation();
+        let userIndex = idNamePair.likes.indexOf(idNamePair.username);
+        if (userIndex === -1){
+            userIndex = idNamePair.dislikes.indexOf(idNamePair.username);
+            if (userIndex !== -1){
+                idNamePair.dislikes.splice(userIndex, 1);
+            }
+            idNamePair.likes.push(idNamePair.username);
+        }
+        else{
+            idNamePair.likes.splice(userIndex, 1);
+        }
+        store.updateLike(idNamePair._id, idNamePair);
+    }
+
+    function handleDislike(event){
+        event.stopPropagation();
+        let userIndex = idNamePair.dislikes.indexOf(idNamePair.username);
+        if (userIndex === -1){
+            userIndex = idNamePair.likes.indexOf(idNamePair.username);
+            if (userIndex !== -1){
+                idNamePair.likes.splice(userIndex, 1);
+            }
+            idNamePair.dislikes.push(idNamePair.username);
+        }
+        else{
+            idNamePair.dislikes.splice(userIndex, 1);
+        }
+        store.updateLike(idNamePair._id, idNamePair);
+    }
+
+    function handleListen(event){
+        // event.stopPropagation();
+        let list = idNamePair;
+        list.listens++;
+        store.updatePlaylist(idNamePair._id, idNamePair);
+    }
     
     if (store.currentList && store.currentList._id === idNamePair._id && open){
         cardElement =
@@ -90,6 +132,7 @@ const FilterUserCard = (props) => {
                 button
                 onClick={(event) => {
                     handleLoadList2(event, idNamePair._id);
+                    handleListen(event);
                     // openSelectedList(event, idNamePair._id);
                 }}
                 >
@@ -98,6 +141,9 @@ const FilterUserCard = (props) => {
                     <Box sx = {{p: 0,fontSize: '10pt'}}>
                         By: {username}
                     </Box>
+                    <Box sx = {{p: 0, fontSize: '10pt'}}>
+                        Listens: {idNamePair.listens}
+                    </Box>
                     {
                         publishDate &&   
                         <Box sx = {{p: 0,fontSize: '10pt'}}>
@@ -105,12 +151,28 @@ const FilterUserCard = (props) => {
                         </Box>
                     }
                 </Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton onClick={(event) => {
+                <Box sx={{ p: 1, display: 'flex', flexDirection: 'column'}}>
+                    <Box sx = {{display: 'flex', flexDirection: 'row', float: 'right'}}>
+                        <Typography>
+                        {idNamePair.likes.length}
+                        <IconButton onClick = {handleLike}>
+                            <ThumbUpIcon/>
+                        </IconButton>
+                        </Typography>
+                        <Typography>
+                            {idNamePair.dislikes.length}
+                            <IconButton onClick = {handleDislike}>
+                                <ThumbDownIcon/>
+                            </IconButton>
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <IconButton onClick={(event) => {
                             handleCloseList(event);
-                    }}>
+                        }}>
                         <ExpandLessIcon style={{fontSize:'34pt'}} />
                     </IconButton>
+                    </Box>
                 </Box>
             </ListItem>
             <Box id ='song-cards-container' 
@@ -153,11 +215,15 @@ const FilterUserCard = (props) => {
                 sx={{ "&:hover": {bgcolor: '#FFB6C1'}, marginTop: '15px', display: 'flex', p: 1, bgcolor: '#FFB6C1', borderRadius: '20px'}}
                 style={{ width: '100%', fontSize: '35pt', height: 'auto' }}
                 button
-                onClick={(event) => {handleLoadList2(event, idNamePair._id)}}>
+                onClick={(event) => {handleLoadList2(event, idNamePair._id)
+                    handleListen(event);}}>
                 <Box sx={{ p: 1, flexGrow: 1 }}>
                     {idNamePair.name}
                     <Box sx = {{p: 1, fontSize: '12pt'}}>
                         By: {username}
+                    </Box>
+                    <Box sx = {{p: 1, fontSize: '12pt'}}>
+                        Listens: {idNamePair.listens}
                     </Box>
                     {
                         publishDate &&   
@@ -166,12 +232,28 @@ const FilterUserCard = (props) => {
                         </Box>
                     }
                 </Box>
-                <Box sx={{ p: 1 }}>
-                    <IconButton onClick={(event) => {
-                        handleOpen(event, idNamePair._id)}}>
-                        <ExpandMoreIcon style={{fontSize:'34pt'}} />
-                    </IconButton>
-            </Box>
+                <Box sx={{ p: 1, display: 'flex', flexDirection: 'column'}}>
+                    <Box sx = {{display: 'flex', flexDirection: 'row', float: 'right'}}>
+                        <Typography>
+                        {idNamePair.likes.length}
+                        <IconButton onClick = {handleLike}>
+                            <ThumbUpIcon/>
+                        </IconButton>
+                        </Typography>
+                        <Typography>
+                            {idNamePair.dislikes.length}
+                            <IconButton onClick = {handleDislike}>
+                                <ThumbDownIcon/>
+                            </IconButton>
+                        </Typography>
+                    </Box>
+                    <Box>
+                        <IconButton onClick={(event) => {
+                            handleOpen(event, idNamePair._id)}}>
+                            <ExpandMoreIcon style={{fontSize:'34pt'}} />
+                        </IconButton>
+                    </Box>
+                </Box>
             </ListItem>
             :
             <ListItem
