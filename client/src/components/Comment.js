@@ -33,7 +33,7 @@ const Comment = (props) => {
   let commentCard = "";
     if (store) {
         commentCard = 
-            <List sx={{ width: '90%', left: '5%', borderRadius: '20px', height: '100%'}}>
+            <List sx={{ width: '90%', left: '5%', borderRadius: '20px', height: '60%'}}>
             {
                 store.selectedList.comments &&
                 store.selectedList.comments.map((pair) => (
@@ -48,7 +48,7 @@ const Comment = (props) => {
 
   return (
     <>
-    <Box sx={{backgroundColor: 'cornflowerblue', width: '91%', height: '85%', borderTopLeftRadius: '10px', borderTopRightRadius: '10px', overflowY: 'auto'}}>
+    <Box sx={{backgroundColor: 'cornflowerblue', width: '91%', height: '75%', borderTopLeftRadius: '10px', borderTopRightRadius: '10px', overflowY: 'auto'}}>
         {commentCard}
     </Box>
     <Box sx={{bgcolor: 'cornflowerblue', width: '91%', height: '13%', borderBottomLeftRadius: '10px', borderBottomRightRadius: '10px'}}>

@@ -10,7 +10,7 @@ const CommentCard = (props) => {
 
   return (
     <Box sx = {{px: '2%', py: '2%', my: '1%', bgcolor: '#1A5F85', borderRadius: '10px', width: '85%', fontSize: '30px', mx:'auto', borderStyle: 'solid', borderWidth: '2px', boxShadow: '1px 3px 3px pink'}}>
-        <Box>
+        <Box sx = {{fontSize: '15px', border: 'none', borderBottom: '1px solid black'}}>
           {username}
         </Box>
         <Box>

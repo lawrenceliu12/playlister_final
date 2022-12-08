@@ -170,7 +170,6 @@ const Navbar = () => {
   function handleKeyPress(event){
     if (event.code === "Enter") {
       if (route === 0){
-        console.log("hello")
         if (text === ""){
           store.renderNoPlaylists();
           return;
@@ -180,7 +179,6 @@ const Navbar = () => {
         }
       }
       else if (route === 1){
-        console.log("sdgsd")
         if (text === ""){
           store.renderNoPublishedPlaylists();
           return;
@@ -190,8 +188,13 @@ const Navbar = () => {
         }
       }
       else if (route === 2){
-        console.log("hey");
-        store.filterUsers(text);
+        if (text === ""){
+          store.renderNoPublishedPlaylists();
+          return;
+        }
+        else{
+          store.filterUsers(text);
+        }
       }
     }
   }

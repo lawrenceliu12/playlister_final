@@ -55,7 +55,7 @@ export default function YoutubePlayer(){
   let currentSong = 0;
 
   const playerOptions = {
-    height: '300',
+    height: '400',
     width: '100%',
     playerVars: {
         // https://developers.google.com/youtube/player_parameters
@@ -175,7 +175,7 @@ else{
           opts={playerOptions}
           onReady={onPlayerReady}
           onStateChange={onPlayerStateChange}/>
-      <Box sx={{width: '95%', height: '40%', backgroundColor: 'cornflowerblue', borderRadius: '10px', borderStyle: 'solid', mx: 'auto'}}>
+      <Box sx={{width: '95%', height: '30%', backgroundColor: 'cornflowerblue', borderRadius: '10px', borderStyle: 'solid', mx: 'auto'}}>
         <Typography variant = "h4" style={{textAlign: 'center'}}>
           Now Playing
         </Typography>

@@ -11,6 +11,8 @@ import Button from '@mui/material/Button'
 import YoutubePlayer from './YouTubePlayer.js'
 import Comment from './Comment.js';
 
+import Statusbar from './Statusbar'
+
 // import Navbar from './Navbar';
 /*
     This React component lists all the top5 lists in the UI.
@@ -64,13 +66,14 @@ const HomeScreen = () => {
                 </Button>
                 <Button variant='contained' sx = {{borderBottomRightRadius: '0', borderBottomLeftRadius: '0', borderStyle: 'solid', borderWidth: '1px', borderColor: 'black'}} onClick={() => {
                     setPlayerOrComment(false);
-                }}>
+                 }} disabled = {!store.selectedList}>
                     COMMENTS
                 </Button>
                 <br/>
-                {playerOrComment ? <YoutubePlayer/> : <Comment />}
+                {playerOrComment ? <YoutubePlayer/> : <Comment/>}
             </div>
         </div>
+        <Statusbar/>
         </>)
 }
 

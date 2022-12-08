@@ -29,7 +29,6 @@ const App = () => {
             <Route path="/all/" exact component={FilterAll} />
             <Route path="/user/"exact component={FilterUser} />
           </Switch>
-          <Statusbar/>
         </GlobalStoreContextProvider>
       </AuthContextProvider>
     </BrowserRouter>

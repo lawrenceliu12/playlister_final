@@ -379,8 +379,8 @@ filterOwnPlaylists = async (req, res) => {
         }
         if (!playlists.length) {
             return res
-                .status(404)
-                .json({ success: false, error: `Playlists not found` })
+                .status(201)
+                .json({ success: true })
         }
         return res.status(200).json({ success: true, playlist: playlists })
     }).catch(err => console.log(err));
@@ -393,7 +393,7 @@ filterAllPlaylists = async (req, res) => {
     const filteredPlaylist = new RegExp(text, "i");
     console.log(filteredPlaylist);
 
-    await Playlist.find({name: filteredPlaylist}, (err, playlists) => {
+    await Playlist.find({name: filteredPlaylist, publish: true}, (err, playlists) => {
         if (err){
             return res.status(400).json({
                 success: false,
@@ -402,8 +402,8 @@ filterAllPlaylists = async (req, res) => {
         }
         if (!playlists.length) {
             return res
-                .status(404)
-                .json({ success: false, error: `Playlists not found` })
+                .status(201)
+                .json({ success: true , playlist: [] })
         }
         return res.status(200).json({ success: true, playlist: playlists })
     }).catch(err => console.log(err));
@@ -423,8 +423,8 @@ filterUser = async (req, res) => {
         }
         if (!playlists.length) {
             return res
-                .status(404)
-                .json({ success: false, error: `Playlists not found` })
+                .status(201)
+                .json({ success: true, playlist: [] })
         }
         for (let i = 0; i < playlists.length; i++){
             if (playlists[i].username.includes(text)){
@@ -433,6 +433,9 @@ filterUser = async (req, res) => {
         }
         if (playlist.length){
             return res.status(200).json({ success: true, playlist: playlist})
+        }
+        else{
+            return res.status(201).json({ success: true, playlist: [] })
         }
     }).catch(err => console.log(err));
 }
